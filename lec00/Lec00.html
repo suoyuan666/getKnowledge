@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>lec0 - 计算机课程拾遗</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./dist/reset.css" />
+    <link rel="stylesheet" href="./dist/reveal.css" />
+    <link rel="stylesheet" href="./dist/theme/simple.css" id="theme" />
+    <link rel="stylesheet" href="./css/highlight/github.css" />
+
+    <link rel="stylesheet" href="./_assets/custom.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-markdown data-separator="<!--s-->" data-separator-vertical="<!--v-->">
+          <textarea data-template>
+            
+
+# 计算机课程拾遗
+
+
+<h3 style="position: absolute; top:16rem; left:23.5rem;">索元</h3>
+
+<a style="position: absolute; top:25rem; left:14rem; font-size: 1.6em;" href="https://s5nblog.site/">GitHub</a>
+
+<h5 style="position: absolute; top:25rem; left:30.5rem;">2024.03.10</h3>
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 课程大纲
+
+</div>
+</div>
+
+<!--v-->
+
+### 课程大纲
+
+<hr>
+
+- 开发环境配置
+- C语言简单入门
+  - 基础概念：类型, 结构体, 枚举, 函数, 控制流 ...
+  - 工具使用：make，vim, GCC, Vscode, Terminal ...
+- C++简单引入
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 开发环境配置
+
+</div>
+</div>
+
+<!--v-->
+
+### 开发环境配置
+
+<hr>
+
+- Windows:
+  - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
+  - [WSL](https://learn.microsoft.com/zh-cn/windows/wsl/install) + Vscode
+- GNU/Linux:
+  - Vscode + GCC/clang
+  - Clion
+          </textarea>
+        </section>
+      </div>
+    </div>
+
+    <script src="./dist/reveal.js"></script>
+
+    <script src="./mermaid/dist/mermaid.min.js"></script>
+
+    <script src="./plugin/markdown/markdown.js"></script>
+    <script src="./plugin/highlight/highlight.js"></script>
+    <script src="./plugin/zoom/zoom.js"></script>
+    <script src="./plugin/notes/notes.js"></script>
+    <script src="./plugin/math/math.js"></script>
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        slideNumber: true,
+        highlight: {
+          highlightOnLoad: false
+        },
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath
+        ]
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"transition":"slide","transitionSpeed":"fast","center":false,"slideNumber":"c/t","_":["Lec00.md"],"static":"lec00"}, queryOptions);
+    </script>
+
+
+    <script>
+      Reveal.initialize(options);
+      Reveal.addEventListener('ready', function (event) {
+        const blocks = Reveal.getRevealElement().querySelectorAll('pre code:not(.mermaid)');
+        const hlp = Reveal.getPlugin('highlight');
+        blocks.forEach(hlp.highlightBlock);
+      });
+    </script>
+
+    <script>
+      const mermaidOptions = extend({ startOnLoad: false }, {});
+      mermaid.startOnLoad = false;
+      mermaid.initialize(mermaidOptions);
+      const cb = function (event) { mermaid.init(mermaidOptions, '.stack.present>.present pre code.mermaid'); };
+      Reveal.addEventListener('ready', cb);
+      Reveal.addEventListener('slidetransitionend', cb);
+    </script>
+  </body>
+</html>
