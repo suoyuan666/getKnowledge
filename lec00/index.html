@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="./dist/theme/simple.css" id="theme" />
     <link rel="stylesheet" href="./css/highlight/github.css" />
 
-    <link rel="stylesheet" href="./_assets/custom.css" />
   </head>
   <body>
     <div class="reveal">
@@ -19,6 +18,8 @@
         <section data-markdown data-separator="<!--s-->" data-separator-vertical="<!--v-->">
           <textarea data-template>
             
+
+<link rel="stylesheet" href="./css/custom.css">
 
 # 计算机课程拾遗
 
@@ -125,7 +126,7 @@
       // options from URL query string
       var queryOptions = Reveal().getQueryHash() || {};
 
-      var options = extend(defaultOptions, {"transition":"slide","transitionSpeed":"fast","center":false,"slideNumber":"c/t","_":["Lec00.md"],"css":"custom.css","static":"lec00"}, queryOptions);
+      var options = extend(defaultOptions, {"transition":"slide","transitionSpeed":"fast","center":false,"slideNumber":"c/t","_":["Lec00.md"],"static":"lec00","static-dirs":"css","staticDirs":"css"}, queryOptions);
     </script>
 
 
