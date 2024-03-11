@@ -1,63 +1,459 @@
-<!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>计算机课程拾遗</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
-    h1 {
-        margin: 0;
-    }
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 0 20px;
-    }
-    .course {
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        padding: 20px;
-        border-radius: 5px;
-    }
-    .course h2 {
-        margin-top: 0;
-    }
-    .course p {
-        margin-bottom: 10px;
-    }
-    .course a {
-        color: #007bff;
-        text-decoration: none;
-    }
-    .course a:hover {
-        text-decoration: underline;
-    }
-</style>
-</head>
-<body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<header>
-    <h1>计算机课程拾遗</h1>
-</header>
+    <title>lec0 - 计算机课程拾遗</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./dist/reset.css" />
+    <link rel="stylesheet" href="./dist/reveal.css" />
+    <link rel="stylesheet" href="./dist/theme/simple.css" id="theme" />
+    <link rel="stylesheet" href="./css/highlight/github.css" />
 
-<div class="container">
-    <div class="course">
-        <h2>Lec 0</h2>
-        <p>课程引入及环境搭建</p>
-        <a href="lec00/Lec00.html">查看课程</a>
-    </div>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-markdown data-separator="<!--s-->" data-separator-vertical="<!--v-->">
+          <textarea data-template>
+            
+
+<link rel="stylesheet" href="./css/custom.css">
+
+# 计算机课程拾遗
+
+
+<h3 style="position: absolute; top:16rem; left:23.5rem;">索元</h3>
+
+<a style="position: absolute; top:25rem; left:14rem; font-size: 1.6em;" href="https://s5nblog.site/getKnowledge/">GitHub</a>
+
+<h5 style="position: absolute; top:25rem; left:30.5rem;">2024.03.10</h3>
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 课程大纲
+
+</div>
 </div>
 
-</body>
+<!--v-->
+
+### 课程大纲
+
+<hr>
+
+- 开发环境配置
+- C语言简单入门
+  - 基础概念：类型, 结构体, 枚举, 函数, 控制流 ...
+  - 工具使用：make，vim, GCC, Vscode, Terminal ...
+- C++简单引入
+- misc
+  - markdown, git ...
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 开发环境配置
+
+</div>
+</div>
+
+<!--v-->
+
+### 开发环境配置
+
+<hr>
+
+- Windows:
+  - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
+  - [WSL](https://learn.microsoft.com/zh-cn/windows/wsl/install) + Vscode
+  - ...
+- GNU/Linux:
+  - Vscode + GCC/clang
+  - Clion
+  - ...
+
+<!--v-->
+
+### 为什么推荐GNU/Linux
+
+<hr>
+
+<!-- <img src="./img/Linux_command-line._Bash._GNOME_Terminal._screenshot.png" style="position: absolute; top:6rem; left:26rem;" width="50%" hight="50%"> -->
+
+- 源于Unix时代的传统——CLI
+- 另一种和机器交互的方式
+- 一个十分适合程序员使用的操作系统（如果你不是要开发Windows应用的话）
+
+<img src="./img/Linux_command-line._Bash._GNOME_Terminal._screenshot.png" width="50%" hight="50%">
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# C语言简单复习
+
+</div>
+</div>
+
+<!--v-->
+
+### 预编译
+
+<hr>
+
+```c
+#include <stdio.h>
+
+#define MAXLEN 200
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
+int main(void) {
+  int array[MAXLEN];
+  for(int i = 0; i < MAXLEN; i++) {
+    array[i] = i;
+  }
+  for(int i = 0; i < MAXLEN; i++) {
+    printf("array[%d] = %d\n",i, array[i]);
+  }
+  printf("min : %d\n", min(array[0], array[1]));
+  return 0;
+}
+```
+
+<!--v-->
+
+### 基本运算——位运算
+
+<hr>
+
+- `&` 按位与
+- `|` 按位或
+- ...
+
+1 & 1 = 1
+
+1 | 0 = 1
+
+0 ^ 1 = 1
+
+<!--v-->
+
+```c
+#define PTE_V (1L << 0) // valid
+#define PTE_R (1L << 1)
+#define PTE_W (1L << 2)
+#define PTE_X (1L << 3)
+#define PTE_U (1L << 4) // user can access
+```
+
+```c
+// mark a PTE invalid for user access.
+// used by exec for the user stack guard page.
+void
+uvmclear(pagetable_t pagetable, uint64 va)
+{
+  pte_t *pte;
+  
+  pte = walk(pagetable, va, 0);
+  if(pte == 0)
+    panic("uvmclear");
+  *pte &= ~PTE_U;
+}
+```
+
+<!--v-->
+
+```c
+// Look up a virtual address, return the physical address,
+// or 0 if not mapped.
+// Can only be used to look up user pages.
+uint64
+walkaddr(pagetable_t pagetable, uint64 va)
+{
+  pte_t *pte;
+  uint64 pa;
+
+  if(va >= MAXVA)
+    return 0;
+
+  pte = walk(pagetable, va, 0);
+  if(pte == 0)
+    return 0;
+  if((*pte & PTE_V) == 0)
+    return 0;
+  if((*pte & PTE_U) == 0)
+    return 0;
+  pa = PTE2PA(*pte);
+  return pa;
+}
+```
+
+<!--v-->
+
+### 判断/循环
+
+<hr>
+
+```c
+if(){
+
+}else if(){
+
+}
+switch(){
+  case :
+    break;
+  default:
+    break;
+}
+for( ; ; ){
+
+}
+while(){
+
+}
+```
+
+<!--v-->
+
+### 复合类型
+
+<hr>
+
+- 结构体
+
+```c
+struct {
+  struct spinlock lock;
+  struct buf buf[NBUF];
+
+  // Linked list of all buffers, through prev/next.
+  // Sorted by how recently the buffer was used.
+  // head.next is most recent, head.prev is least.
+  struct buf head;
+} bcache;
+```
+
+- 枚举
+
+```c
+enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+```
+
+<!--v-->
+
+### 指针 & const
+
+<hr>
+
+```c
+#include <stdio.h>
+
+int main(void) {
+  const int a = 3;
+  int b = 5;
+  printf("a: %d\n", a);
+  printf("b: %d\n", b);
+  const int *pa = &a;
+  int  * const pb = &b;
+  b = 10;
+  *pa = 10;
+  (*pb)++;
+  pb++;
+  pa = &b;
+  printf("a: %d\n", a);
+  printf("b: %d\n", b);
+}
+```
+
+<!--v-->
+
+### 函数——可变参数
+
+<hr>
+
+```c
+#include <stdio.h>
+#include <stdarg.h>
+
+int printf(const char *restrict fmt, ...)
+{
+	int ret;
+	va_list ap;
+	va_start(ap, fmt);
+	ret = vfprintf(stdout, fmt, ap);
+	va_end(ap);
+	return ret;
+}
+```
+
+<!--v-->
+
+### 函数——可变参数
+
+<hr>
+
+```c
+int
+main(int argc, char *argv[])
+{
+  int i;
+
+  for(i = 1; i < argc; i++){
+    write(1, argv[i], strlen(argv[i]));
+    if(i + 1 < argc){
+      write(1, " ", 1);
+    } else {
+      write(1, "\n", 1);
+    }
+  }
+  exit(0);
+}
+```
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 工具使用
+
+</div>
+</div>
+
+<!--v-->
+
+### make
+
+<hr>
+
+```c
+//a.c
+#include "b.h"
+#include <stdio.h>
+
+int main(){
+	int a = 100;
+	swap(&a, &shared);
+    printf("shared: %d\n", shared);
+}
+//b.c
+int shared = 1;
+void swap(int* a, int* b){
+	*a ^= *b ^= *a ^= *b;
+}
+//b.h
+int shared;
+void swap(int* a, int* b);
+```
+
+<!--v-->
+
+### make
+
+<hr>
+
+
+```shell
+$ gcc -shared b.c -o b.so
+$ gcc a.c ./b.so -o a
+$ ./a
+shared: 100
+```
+
+```makefile
+CC = /usr/bin/gcc
+
+a: a.c b.so
+	$(CC) -o a a.c ./b.so
+
+b.so: b.c
+	$(CC) -shared -o b.so b.c
+
+run : a
+	@./a
+clean:
+	rm -f a b.so
+```
+          </textarea>
+        </section>
+      </div>
+    </div>
+
+    <script src="./dist/reveal.js"></script>
+
+    <script src="./mermaid/dist/mermaid.min.js"></script>
+
+    <script src="./plugin/markdown/markdown.js"></script>
+    <script src="./plugin/highlight/highlight.js"></script>
+    <script src="./plugin/zoom/zoom.js"></script>
+    <script src="./plugin/notes/notes.js"></script>
+    <script src="./plugin/math/math.js"></script>
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        slideNumber: true,
+        highlight: {
+          highlightOnLoad: false
+        },
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath
+        ]
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"transition":"slide","transitionSpeed":"fast","center":false,"slideNumber":"c/t","_":["Lec00.md"],"static":"lec00","static-dirs":"css","staticDirs":"css"}, queryOptions);
+    </script>
+
+
+    <script>
+      Reveal.initialize(options);
+      Reveal.addEventListener('ready', function (event) {
+        const blocks = Reveal.getRevealElement().querySelectorAll('pre code:not(.mermaid)');
+        const hlp = Reveal.getPlugin('highlight');
+        blocks.forEach(hlp.highlightBlock);
+      });
+    </script>
+
+    <script>
+      const mermaidOptions = extend({ startOnLoad: false }, {});
+      mermaid.startOnLoad = false;
+      mermaid.initialize(mermaidOptions);
+      const cb = function (event) { mermaid.init(mermaidOptions, '.stack.present>.present pre code.mermaid'); };
+      Reveal.addEventListener('ready', cb);
+      Reveal.addEventListener('slidetransitionend', cb);
+    </script>
+  </body>
 </html>

@@ -51,6 +51,8 @@
   - 基础概念：类型, 结构体, 枚举, 函数, 控制流 ...
   - 工具使用：make，vim, GCC, Vscode, Terminal ...
 - C++简单引入
+- misc
+  - markdown, git ...
 
 <!--s-->
 
@@ -71,10 +73,316 @@
 - Windows:
   - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
   - [WSL](https://learn.microsoft.com/zh-cn/windows/wsl/install) + Vscode
+  - ...
 - GNU/Linux:
   - Vscode + GCC/clang
   - Clion
+  - ...
 
+<!--v-->
+
+### 为什么推荐GNU/Linux
+
+<hr>
+
+<!-- <img src="./img/Linux_command-line._Bash._GNOME_Terminal._screenshot.png" style="position: absolute; top:6rem; left:26rem;" width="50%" hight="50%"> -->
+
+- 源于Unix时代的传统——CLI
+- 另一种和机器交互的方式
+- 一个十分适合程序员使用的操作系统（如果你不是要开发Windows应用的话）
+
+<img src="./img/Linux_command-line._Bash._GNOME_Terminal._screenshot.png" width="50%" hight="50%">
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# C语言简单复习
+
+</div>
+</div>
+
+<!--v-->
+
+### 预编译
+
+<hr>
+
+```c
+#include <stdio.h>
+
+#define MAXLEN 200
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
+int main(void) {
+  int array[MAXLEN];
+  for(int i = 0; i < MAXLEN; i++) {
+    array[i] = i;
+  }
+  for(int i = 0; i < MAXLEN; i++) {
+    printf("array[%d] = %d\n",i, array[i]);
+  }
+  printf("min : %d\n", min(array[0], array[1]));
+  return 0;
+}
+```
+
+<!--v-->
+
+### 基本运算——位运算
+
+<hr>
+
+- `&` 按位与
+- `|` 按位或
+- ...
+
+1 & 1 = 1
+
+1 | 0 = 1
+
+0 ^ 1 = 1
+
+<!--v-->
+
+```c
+#define PTE_V (1L << 0) // valid
+#define PTE_R (1L << 1)
+#define PTE_W (1L << 2)
+#define PTE_X (1L << 3)
+#define PTE_U (1L << 4) // user can access
+```
+
+```c
+// mark a PTE invalid for user access.
+// used by exec for the user stack guard page.
+void
+uvmclear(pagetable_t pagetable, uint64 va)
+{
+  pte_t *pte;
+  
+  pte = walk(pagetable, va, 0);
+  if(pte == 0)
+    panic("uvmclear");
+  *pte &= ~PTE_U;
+}
+```
+
+<!--v-->
+
+```c
+// Look up a virtual address, return the physical address,
+// or 0 if not mapped.
+// Can only be used to look up user pages.
+uint64
+walkaddr(pagetable_t pagetable, uint64 va)
+{
+  pte_t *pte;
+  uint64 pa;
+
+  if(va >= MAXVA)
+    return 0;
+
+  pte = walk(pagetable, va, 0);
+  if(pte == 0)
+    return 0;
+  if((*pte & PTE_V) == 0)
+    return 0;
+  if((*pte & PTE_U) == 0)
+    return 0;
+  pa = PTE2PA(*pte);
+  return pa;
+}
+```
+
+<!--v-->
+
+### 判断/循环
+
+<hr>
+
+```c
+if(){
+
+}else if(){
+
+}
+switch(){
+  case :
+    break;
+  default:
+    break;
+}
+for( ; ; ){
+
+}
+while(){
+
+}
+```
+
+<!--v-->
+
+### 复合类型
+
+<hr>
+
+- 结构体
+
+```c
+struct {
+  struct spinlock lock;
+  struct buf buf[NBUF];
+
+  // Linked list of all buffers, through prev/next.
+  // Sorted by how recently the buffer was used.
+  // head.next is most recent, head.prev is least.
+  struct buf head;
+} bcache;
+```
+
+- 枚举
+
+```c
+enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+```
+
+<!--v-->
+
+### 指针 & const
+
+<hr>
+
+```c
+#include <stdio.h>
+
+int main(void) {
+  const int a = 3;
+  int b = 5;
+  printf("a: %d\n", a);
+  printf("b: %d\n", b);
+  const int *pa = &a;
+  int  * const pb = &b;
+  b = 10;
+  *pa = 10;
+  (*pb)++;
+  pb++;
+  pa = &b;
+  printf("a: %d\n", a);
+  printf("b: %d\n", b);
+}
+```
+
+<!--v-->
+
+### 函数——可变参数
+
+<hr>
+
+```c
+#include <stdio.h>
+#include <stdarg.h>
+
+int printf(const char *restrict fmt, ...)
+{
+	int ret;
+	va_list ap;
+	va_start(ap, fmt);
+	ret = vfprintf(stdout, fmt, ap);
+	va_end(ap);
+	return ret;
+}
+```
+
+<!--v-->
+
+### 函数——可变参数
+
+<hr>
+
+```c
+int
+main(int argc, char *argv[])
+{
+  int i;
+
+  for(i = 1; i < argc; i++){
+    write(1, argv[i], strlen(argv[i]));
+    if(i + 1 < argc){
+      write(1, " ", 1);
+    } else {
+      write(1, "\n", 1);
+    }
+  }
+  exit(0);
+}
+```
+
+<!--s-->
+
+<div class="middle center">
+<div style="width: 100%">
+
+# 工具使用
+
+</div>
+</div>
+
+<!--v-->
+
+### make
+
+<hr>
+
+```c
+//a.c
+#include "b.h"
+#include <stdio.h>
+
+int main(){
+	int a = 100;
+	swap(&a, &shared);
+    printf("shared: %d\n", shared);
+}
+//b.c
+int shared = 1;
+void swap(int* a, int* b){
+	*a ^= *b ^= *a ^= *b;
+}
+//b.h
+int shared;
+void swap(int* a, int* b);
+```
+
+<!--v-->
+
+### make
+
+<hr>
+
+
+```shell
+$ gcc -shared b.c -o b.so
+$ gcc a.c ./b.so -o a
+$ ./a
+shared: 100
+```
+
+```makefile
+CC = /usr/bin/gcc
+
+a: a.c b.so
+	$(CC) -o a a.c ./b.so
+
+b.so: b.c
+	$(CC) -shared -o b.so b.c
+
+run : a
+	@./a
+clean:
+	rm -f a b.so
+```
           </textarea>
         </section>
       </div>
